@@ -1,0 +1,51 @@
+[package]
+name = "nhp_ac"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.82"
+
+[profile.release]
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = true
+opt-level = 3
+
+[dependencies]
+tokio = { version = "1.45", features = ["full"] }
+tokio-util = "0.7"
+futures = "0.3"
+
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+bytes = "1.10"
+base64 = "0.22"
+
+thiserror = "2.0"
+anyhow = "1.0"
+
+tracing = "0.1"
+tracing-subscriber = "0.3"
+
+rand_core = "0.6"
+getrandom = "0.2"
+
+zeroize = { version = "1.8", features = ["zeroize_derive"] }
+
+x25519-dalek = { version = "2.0", features = ["static_secrets"] }
+ed25519-dalek = { version = "2.1", features = ["rand_core"] }
+chacha20poly1305 = "0.10"
+hkdf = "0.12"
+sha2 = "0.10"
+
+snow = "0.9"
+
+dashmap = "6.1"
+parking_lot = "0.12"
+socket2 = "0.5"
+uuid = { version = "1.18", features = ["v4", "serde"] }
+config = "0.15"
+
+[dev-dependencies]
+tokio-test = "0.4"
