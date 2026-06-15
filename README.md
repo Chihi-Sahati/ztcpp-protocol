@@ -14,7 +14,9 @@
 ---
 
 <p align="center">
-  <img src="docs/architecture/architecture_banner.png" alt="ZTCPP 6G Architecture Banner" width="100%">
+  <img src="docs/architecture/1.png" alt="ZTCPP Architecture Part 1" width="100%">
+  <br>
+  <img src="docs/architecture/2.png" alt="ZTCPP Architecture Part 2" width="100%">
 </p>
 
 ---
