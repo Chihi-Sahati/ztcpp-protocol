@@ -45,3 +45,8 @@ venv.bak/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Rust
+target/
+**/*.rs.bk
+Cargo.lock

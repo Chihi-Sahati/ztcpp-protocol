@@ -1,0 +1,49 @@
+// ZTCPP FlatBuffers Schema
+// Defines the high-performance binary structures for NHP Payloads
+namespace ztcpp.schema;
+
+// The Intent Class defines the authorization scope
+enum IntentClass : byte {
+    UNKNOWN = 0,
+    TELEMETRY = 1,
+    CONTROL = 2,
+    DATA_PLANE = 3,
+    EMERGENCY = 4
+}
+
+// NHP-KNK (Knock) Payload
+// This is the inner payload of the Noise-encrypted KNK message
+table KnkPayload {
+    agent_uri: string;
+    nonce: uint64;
+    timestamp: uint64;          // Snapshot timestamp captured by agent
+    intent: IntentClass;
+    target_service: string;
+}
+
+// Safety Gate Parameters
+table SafetyGate {
+    edns_threshold: uint32;     // Minimum EDNS score required (e.g., 85)
+    cei_threshold: uint32;      // Minimum CEI score required
+    max_duration_sec: uint32;   // Hard limit on session time
+}
+
+// NHP-AOP (Auth-Open-Policy) Payload
+// Sent from NHP-Server (PDP) to NHP-AC (PEP)
+table AopPayload {
+    agent_uri: string;
+    tunnel_id: string;          // Micro-tunnel reference
+    sat_jwt: string;            // JWS encoded SAT Token
+    safety_gates: SafetyGate;
+}
+
+// NHP-REV (Revocation) Payload
+// Sent autonomously by SGC upon EDNS breach
+table RevPayload {
+    tunnel_id: string;
+    reason_code: uint32;
+    measured_edns: uint32;
+    timestamp: uint64;
+}
+
+root_type KnkPayload;

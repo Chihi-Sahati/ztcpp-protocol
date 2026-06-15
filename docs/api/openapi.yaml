@@ -1,0 +1,104 @@
+openapi: 3.0.3
+info:
+  title: ZTCPP (Zero Trust Control and Policy Protocol) API
+  description: Normative API specifications for the NHP Gateway and AgentDNS Intent Resolution Engine.
+  version: 1.0.0
+servers:
+  - url: https://{edge_gateway}:8443/api/v1
+    variables:
+      edge_gateway:
+        default: ztcpp-edge.local
+
+paths:
+  /nhp/handshake:
+    post:
+      summary: Authenticated-before-Connect (AbC) Handshake
+      description: Strictly evaluates cryptographic tokens and signatures before allowing connection to internal SDR/SBA resources.
+      operationId: nhpHandshake
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HandshakeRequest'
+      responses:
+        '200':
+          description: Handshake successful, session granted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HandshakeResponse'
+        '403':
+          description: Forbidden - Cryptographic or Policy (MAMA) verification failed.
+
+  /agentdns/resolve:
+    post:
+      summary: Resolve Agent Intent
+      description: Out-of-band resolution mapping an operational intent to a network topology.
+      operationId: resolveIntent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IntentResolutionRequest'
+      responses:
+        '200':
+          description: Intent successfully resolved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntentResolutionResponse'
+
+components:
+  schemas:
+    HandshakeRequest:
+      type: object
+      required:
+        - nonce
+        - signature
+        - payload
+      properties:
+        nonce:
+          type: string
+          description: Monotonically increasing nonce to prevent replay attacks.
+        signature:
+          type: string
+          description: Ed25519 signature over the payload and nonce.
+        payload:
+          type: object
+          description: Contains the System Authentication Token (SAT) and Intent ID.
+          
+    HandshakeResponse:
+      type: object
+      properties:
+        session_id:
+          type: string
+        status:
+          type: string
+          enum: [GRANTED, REJECTED]
+        safety_score:
+          type: number
+          format: float
+
+    IntentResolutionRequest:
+      type: object
+      required:
+        - intent
+        - agent_id
+      properties:
+        intent:
+          type: string
+          example: "beamform_adjust"
+        agent_id:
+          type: string
+
+    IntentResolutionResponse:
+      type: object
+      properties:
+        target_endpoint:
+          type: string
+          example: "grpc://internal-sdr-controller:50051"
+        sat_token:
+          type: string
+          description: Temporary short-lived token to use in the Handshake.

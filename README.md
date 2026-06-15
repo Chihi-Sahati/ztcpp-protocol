@@ -1,10 +1,10 @@
 # Zero Trust Control and Policy Protocol (ZTCPP)
 **Normative protocol specification for zero-trust control-plane communication in autonomous, agent-driven 5G/6G networks.**
 
-**License:** MIT | **Code style:** black
+**License:** MIT | **Code style:** black (Python), rustfmt (Rust)
 
 ### Authors
-**AlHussein A. AlSahati¹** and **Houda Chihi²**
+**AlHussein A. AlSahati¹** and **Houda Chihi²** (at InnovCOM Lab of SupCOM Tunisia)
 
 ¹ *Military Academy for Security and Strategic Sciences, Benghazi, Libya*  
 ² *Higher School of Communication of Tunis (Sup'Com), University of Carthage, Ariana, Tunisia*  
@@ -20,111 +20,115 @@
 ---
 
 ## Abstract
-In legacy IP architectures, connection establishment precedes authentication, inherently exposing critical 5G/6G control planes to reconnaissance and severe resource-exhaustion attacks (Signaling Storms). As next-generation networks transition from static Network Operations Centers (NOC) to autonomous, agent-driven Security Operations Centers (SOC), a proactive security paradigm is paramount. 
+In legacy IP architectures, connection establishment precedes authentication, inherently exposing critical 5G/6G control planes to reconnaissance and severe resource-exhaustion attacks (Signaling Storms). As next-generation networks transition from static Network Operations Centers (NOC) to autonomous, agent-driven Service Operations Centers (SOC), a proactive security paradigm is paramount. 
 
-In this research, we propose the **Zero Trust Control and Policy Protocol (ZTCPP)**, a normative specification that enforces a strict **"Authenticated-before-Connect" (AbC)** workflow. By leveraging out-of-band Intent Resolution (**AgentDNS**), high-speed **Ed25519 JWS** cryptography, and a deterministic policy engine known as the **Micro-tunneling and Autonomous Mediation Architecture (MAMA)**, ZTCPP formally verifies, authenticates, and filters autonomous agents at the absolute network edge. 
+In this research, we propose the **Zero Trust Control and Policy Protocol (ZTCPP)**, a normative specification that enforces a strict **"Authenticated-before-Connect" (AbC)** workflow. By leveraging out-of-band Intent Resolution (**AgentDNS**), **FlatBuffers** serialization over the **Noise Protocol Framework (Curve25519/ChaCha20-Poly1305)**, and a deterministic policy engine based on the **Metrics-driven Autonomous Management Architecture (MAMA)**, ZTCPP formally verifies, authenticates, and filters autonomous agents at the absolute network edge. 
 
-Extensive simulations comparing our model to legacy configurations demonstrate that ZTCPP completely mitigates lateral movement within 3GPP Service Based Architectures (SBA). Furthermore, under high-volume signaling storms (>1000 requests/sec), ZTCPP maintains a flat resource footprint (CPU/RAM) and sub-millisecond processing latency (**< 2 ms**), proving absolute **Digital Sovereignty** and zero-trust immunity.
+Extensive integrations comparing our model to legacy configurations demonstrate that ZTCPP completely mitigates lateral movement within 3GPP Service Based Architectures (SBA). Under high-volume signaling storms (>100,000 requests/sec), the Rust-based ZTCPP enforcement node maintains a flat zero-allocation memory footprint and sub-millisecond revocation latency (**< 1.63 ms**), proving absolute **Sovereign Digital Immunity**.
 
 ---
 
-## Repository Contents
-| Directory/File | Description |
+## Repository Architecture
+This repository implements a strict hardware-level isolation between the Policy Decision Point (Python) and the Policy Enforcement Point (Rust).
+
+| Directory | Description |
 |---|---|
-| `nhp_server/app/models/` | Normative Data Structures mapping ZTCPP payloads (KNK, AOP) and Agent Intents. |
-| `nhp_server/app/security/` | Cryptographic engine handling Ed25519 signatures, JWT bounds, and Trust Store limits. |
-| `nhp_server/app/policy/` | Policy Decision Point (PDP) featuring the deterministic MAMA Safety Gates. |
-| `nhp_server/agent_simulator.py` | Command-line validation tool running 10 strict Zero-Trust threat vectors/scenarios. |
-| `nhp_server/performance_evaluator.py`| Signaling Storm simulator evaluating AbC overhead vs legacy TCP/TLS state parsing. |
-| `nhp_server/plot_results.py` | Metric generation utilizing `seaborn/matplotlib` for academic Q1 vector graphics. |
+| `core/` | Normative Data Structures (`ztcpp.fbs`). Zero-copy FlatBuffers schemas for high-speed NHP payloads. |
+| `nhp_ac/` | **(Rust)** Policy Enforcement Point (PEP). Zero-allocation ingress pipeline with ChaCha20-Poly1305 and Ed25519 validation. |
+| `nhp_server/` | **(Python)** Policy Decision Point (PDP). Evaluates deterministic MAMA Safety Gates and issues SAT JWTs. |
+| `integration/` | End-to-end benchmarking scripts and consolidated performance artifacts/telemetry. |
+| `docs/` | IETF Draft specifications, OpenAPI definitions, TLA+ formal verification models, and architecture diagrams. |
 
 ---
 
 ## Key Features
-- **Authenticated-before-Connect (AbC):** A Fail-Closed 5-state machine that guarantees no network-layer packets are processed before cryptographic intent is verified.
-- **AgentDNS Intent Resolution:** Bridges discovery and authorization by routing autonomous agents based on "Intents" (e.g., `monitor`, `manage`) rather than static IP topologies.
-- **MAMA Safety Gates:** A tri-layered mathematical policy gateway:
+- **Authenticated-before-Connect (AbC):** A Fail-Closed state machine that guarantees no network-layer packets are processed before cryptographic intent is verified.
+- **Zero-Allocation Ingress Pipeline:** The Rust PEP node decrypts, verifies, and parses payloads completely in-place without heap allocation, rendering it immune to memory exhaustion attacks.
+- **MAMA Safety Gates:** A tri-layered mathematical policy gateway evaluating:
   - *Funding Gate:* Enforces SLA penalty exposure limits.
   - *Safety Gate:* Balances Capability Effectiveness Index (CEI) against Expected Demand Not Served (EDNS).
   - *Value Realization Gate:* Ensures net-positive operational economics for the requested intent.
-- **3GPP SBA Mediation:** Middleware architecture strictly protecting 5G Core Network Functions from internal lateral movement.
-- **Digital Sovereignty Immunity:** Zero state-memory allocation for unverified traffic, yielding mathematical immunity to Signaling Storms.
+- **Event-Driven Atomic Snapshots:** Eliminates continuous-time race conditions (Zeno Guard Bug) by anchoring all temporal evaluations to frozen global state timestamps.
 
 ---
 
-## Simulation Parameters 
+## Performance Benchmark Requirements
 
 | Parameter | Value | Config Variable |
 |---|---|---|
-| Cryptographic Curve | Ed25519 (EdDSA) | `alg` |
-| Token Expiration Bound | 60 seconds | `exp_bound` |
-| Clock Skew Tolerance | 5 seconds | `skew` |
+| Cryptographic Handshake | Noise IK (Curve25519) | `noise_pattern` |
+| Payload Cipher | ChaCha20-Poly1305 | `aead_cipher` |
+| Serialization Engine | FlatBuffers (Zero-Copy) | `fbs_schema` |
+| Token Expiration Bound | 60 seconds (Strict) | `exp_bound` |
 | MAMA Min Safety Score | 0.85 | `min_safety_score` |
-| MAMA Min Funding Ratio | 0.30 | `min_funding_ratio` |
-| MAMA Max Throughput Dev. | 0.20 | `max_throughput_deviation` |
-
----
-
-## Performance Results 
-
-| Method | Threat Mitigation | State Memory Overhead | Processing Latency | Network Stability |
-|---|---|---|---|---|
-| **ZTCPP AbC (Ours)** | 100% (Cryptographic Edge Drop) | 0 Bytes (Fail-Closed) | **< 2.0 ms** | Highly Stable |
-| **Legacy (TCP/TLS)** | 0% (Reactive Firewalling) | High (Socket/DB locking) | > 45 ms | Resource Starvation |
+| Max Revocation Latency | < 500 ms | `edns_teardown_budget` |
 
 ---
 
 ## Installation & Quick Start
 
-### 1. Launch the Simulation Environment
-To test the logical correctness of the MAMA Gates and cryptographic edge verification, run the 10-scenario validation matrix:
+### Prerequisites
+- **Rust Toolchain:** `1.82+`
+- **Python:** `3.12+`
+- **FlatBuffers Compiler:** `flatc` (Must be available in system PATH)
+
+### 1. Build the Rust Enforcement Node (NHP-AC)
+The build script automatically compiles the `ztcpp.fbs` schema into zero-copy Rust bindings.
+```bash
+cd nhp_ac
+cargo build --release
+```
+
+### 2. Run the End-to-End Integration & Benchmarking
+
+To simulate the complete "Authenticated-before-Connect" handshake followed by an EDNS-triggered autonomous revocation (verifying the < 500ms constraint):
 
 ```bash
+# Install Python dependencies
 cd nhp_server
-python agent_simulator.py
+pip install -r requirements.txt
+
+# Run the integration simulator from the repository root
+cd ..
+python integration/e2e/simulate_handshake.py
 ```
-*(This will output a colored CLI matrix detailing PASS/FAIL states for attacks like Token Replay, Clock Skew, and MAMA violations).*
 
-### 2. Run Signaling Storm Evaluation & Generate Plots
-To simulate a high-volume signaling storm and generate the academic plots (`throughput_vs_latency.png` & `resource_footprint.png`):
-
-```bash
-# Extract raw telemetry to CSV
-python performance_evaluator.py
-
-# Generate mathematical figures
-python plot_results.py
-```
+*(This will output the determinist latency metrics and cryptographic state transitions).*
 
 ---
 
 ## Mathematical Formulation
-The MAMA Policy Decision Engine utilizes a multi-variate continuous scoring algorithm to evaluate the real-time safety of granting an agent's intent. 
+
+The MAMA Policy Decision Engine utilizes a multi-variate continuous scoring algorithm to evaluate the real-time safety of granting an agent's intent.
 
 **Safety Gate Composite Function:**
 The safety score dynamically balances the base infrastructural safety limit against the newly projected capability effectiveness:
 
-```math
-Score_{safety} = (w_1 \times (1 - EDNS)) + (w_2 \times CEI)
-```
-*Where:*
-- `EDNS` = Expected Demand Not Served.
-- `CEI` = Capability Effectiveness Index (Projected intent impact).
-- $w_1, w_2$ = Contextual weights favoring core-network stability over localized capability enhancements.
+$$Score_{safety} = (w_1 \times (1 - EDNS)) + (w_2 \times CEI)$$
 
-A session is instantaneously denied (HTTP 403 / REJECT) if $Score_{safety} < \text{min\_safety\_score}$.
+*Where:*
+
+* `EDNS` = Expected Demand Not Served.
+* `CEI` = Capability Effectiveness Index (Projected intent impact).
+* $w_1, w_2$ = Contextual weights favoring core-network stability over localized capability enhancements.
+
+A session is autonomously denied and triggering immediate micro-tunnel teardown if $Score_{safety} < \text{min\_safety\_score}$.
 
 ---
 
 ## Citation
+
 If you find this protocol specification or simulation framework useful in your research, please consider citing:
 
 ```bibtex
 @article{alsahati2026ztcpp,
   title={Zero Trust Control and Policy Protocol: Normative protocol specification for zero-trust control-plane communication in autonomous, agent-driven 5G/6G networks.},
   author={AlSahati, AlHussein A. and Chihi, Houda},
-  journal={TBD},
   year={2026},
-  note={Submitted}
-}
 ```
+
+---
+
+<p align="center">
+  <b>Built with love at InnovCOM Lab of SupCOM Tunisia</b>
+</p>
