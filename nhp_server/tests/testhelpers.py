@@ -72,7 +72,7 @@ def create_jws_claims(
     edns_score: float,
     capabilities: list[str],
     issuer: str = "test-node-1",
-    audience: str = "ztcpp-nhp-server",
+    audience: str = "nhp_sba-nhp-server",
     action_class: str = "read",
     aomm_level: int = 2,
     session_id: str | None = None,
@@ -89,14 +89,14 @@ def create_jws_claims(
         "timestamp": timestamp,
         "edns_score": edns_score,
         "capabilities": capabilities,
-        "ztcpp_intent": {
+        "nhp_sba_intent": {
             "action_class": action_class,
             "aomm_level": aomm_level,
         },
     }
 
     if session_id:
-        claims["ztcpp_context"] = {
+        claims["nhp_sba_context"] = {
             "session_id": session_id,
             "requesting_service": "test-service",
             "target_service": "target-service",
@@ -134,7 +134,7 @@ def create_knk_payload(
     capabilities: list[str] | None = None,
     action_class: str = "read",
     aomm_level: int = 2,
-    audience: str = "ztcpp-nhp-server",
+    audience: str = "nhp_sba-nhp-server",
     override_claims: dict[str, Any] | None = None,
 ) -> tuple[dict[str, Any], Ed25519PrivateKey, Ed25519PublicKey]:
     """

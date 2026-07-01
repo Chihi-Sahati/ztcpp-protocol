@@ -1,4 +1,4 @@
-# ZTCPP Sequence Diagrams
+# NHP-SBA Sequence Diagrams
 
 ## Authenticated-before-Connect (AbC) Workflow & MAMA Gate Verification
 
@@ -7,7 +7,7 @@ This sequence diagram illustrates the Zero-Trust fail-closed handshake process.
 ```mermaid
 sequenceDiagram
     participant Agent as Autonomous Agent
-    participant DNS as AgentDNS
+    participant DNS as NHP-NRS
     participant NHP as NHP Gateway (eBPF/XDP)
     participant MAMA as MAMA Policy Engine
     participant SBA as 3GPP SBA / SDR HAL

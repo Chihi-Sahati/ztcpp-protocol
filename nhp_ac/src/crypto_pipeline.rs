@@ -6,7 +6,7 @@ use ed25519_dalek::{Signature, Verifier, VerifyingKey};
 use thiserror::Error;
 
 // Include the generated FlatBuffers schema
-use crate::ztcpp_schema::ztcpp::schema::{root_as_knk_payload, KnkPayload};
+use crate::nhp_sba_schema::nhp_sba::nhp::{root_as_knk_payload, KnkPayload};
 
 /// Strongly typed, deterministic error enum for the crypto pipeline.
 /// No panics or internal state leaks allowed.

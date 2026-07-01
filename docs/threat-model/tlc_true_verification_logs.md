@@ -1,7 +1,7 @@
-# ZTCPP True TLC Formal Verification Logs
+# NHP-SBA True TLC Formal Verification Logs
 
 **Date**: 2026-06-15
-**Model**: `ZTCPP_True_Formal_Model.tla`
+**Model**: `NHP-SBA_True_Formal_Model.tla`
 **Status**: INVARIANT VIOLATION DETECTED (Counterexample Found)
 
 ---
@@ -85,9 +85,9 @@ A third-party researcher can run this exact verification independently using the
    ```bash
    curl -LO https://github.com/tlaplus/tlaplus/releases/download/v1.8.0/tla2tools.jar
    ```
-2. Verify that the files `ZTCPP_True_Formal_Model.tla` and `ZTCPP_True_Formal_Model.cfg` are in the same directory.
+2. Verify that the files `NHP-SBA_True_Formal_Model.tla` and `NHP-SBA_True_Formal_Model.cfg` are in the same directory.
 3. Run the TLC Model Checker with deadlock and invariant checking enabled:
    ```bash
-   java -jar tla2tools.jar -config ZTCPP_True_Formal_Model.cfg -deadlock ZTCPP_True_Formal_Model.tla
+   java -jar tla2tools.jar -config NHP-SBA_True_Formal_Model.cfg -deadlock NHP-SBA_True_Formal_Model.tla
    ```
 4. The TLC engine will output the exact 7-step counterexample trace detailed above.

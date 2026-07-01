@@ -1,8 +1,8 @@
-------------------------- MODULE ZTCPP_Formal_Model -------------------------
+------------------------- MODULE NHP-SBA_Formal_Model -------------------------
 EXTENDS Integers, FiniteSets, TLC
 
 (* 
-   ZTCPP Formal Verification Model (TLA+)
+   NHP-SBA Formal Verification Model (TLA+)
    -------------------------------------
    This model formally defines the NHP state machine and the MAMA Safety Gates.
    It provides machine-checkable proofs for:
@@ -38,7 +38,7 @@ Init ==
 
 \* --- AGENT ACTIONS ---
 AgentRequestIntent(a, exp, intent) ==
-    \* AgentDNS issues a cryptographic SAT for a specific intent
+    \* NHP-NRS issues a cryptographic SAT for a specific intent
     /\ sat_registry' = sat_registry \cup {[agent |-> a, exp |-> exp, intent |-> intent, active |-> TRUE]}
     /\ UNCHANGED << gateway_state, highest_nonce, messages, clock, mama_scores >>
 

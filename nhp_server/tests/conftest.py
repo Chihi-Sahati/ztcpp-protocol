@@ -1,4 +1,4 @@
-"""Shared test helpers and fixtures for ZTCPP NHP-Server tests."""
+"""Shared test helpers and fixtures for NHP-SBA NHP-Server tests."""
 
 from __future__ import annotations
 
@@ -99,8 +99,8 @@ def create_valid_claims(
         timestamp = now
 
     return {
-        "iss": "ztcpp-agent",
-        "aud": "ztcpp-nhp-server",
+        "iss": "nhp_sba-agent",
+        "aud": "nhp_sba-nhp-server",
         "exp": now + exp_offset,
         "iat": now,
         "node_id": node_id,
@@ -108,11 +108,11 @@ def create_valid_claims(
         "nonce": nonce,
         "edns_score": 0.15,
         "capabilities": ["soc-analysis", "sba-read"],
-        "ztcpp_intent": {
+        "nhp_sba_intent": {
             "action_class": "read",
             "aomm_level": 4,
         },
-        "ztcpp_context": {
+        "nhp_sba_context": {
             "session_id": "sess-test-001",
             "requesting_service": "soc-analyzer",
             "target_service": "nrf",

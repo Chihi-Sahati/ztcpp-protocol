@@ -1,8 +1,8 @@
-------------------------- MODULE ZTCPP_Adversarial_Model -------------------------
+------------------------- MODULE NHP-SBA_Adversarial_Model -------------------------
 EXTENDS Integers, FiniteSets, Sequences, TLC
 
 (* 
-   ZTCPP Adversarial Formal Verification Model (TLA+)
+   NHP-SBA Adversarial Formal Verification Model (TLA+)
    --------------------------------------------------
    Extends the standard model with:
    1. Malicious agent replay attempts (Attacker state).

@@ -1,7 +1,7 @@
-# ZTCPP Formal Proof Summary & Semantic Lockdown Report
+# NHP-SBA Formal Proof Summary & Semantic Lockdown Report
 
 **Date**: 2026-06-15
-**Model**: `ZTCPP_Snapshot_Model.tla`
+**Model**: `NHP-SBA_Snapshot_Model.tla`
 **Status**: VERIFIED & MATHEMATICALLY CONSISTENT (0 Counterexamples)
 
 ---

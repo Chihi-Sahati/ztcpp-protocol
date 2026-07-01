@@ -1,4 +1,4 @@
------------------------ MODULE ZTCPP_Deterministic_Model -----------------------
+----------------------- MODULE NHP-SBA_Deterministic_Model -----------------------
 EXTENDS Integers, FiniteSets, Sequences, TLC
 
 CONSTANTS 

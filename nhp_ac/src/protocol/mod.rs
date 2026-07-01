@@ -5,3 +5,5 @@ pub mod replay;
 
 pub use knk::{NhpKnkPayload, NhpKnkParser};
 pub use nhp_state_machine::{NhpState, NhpStateMachine};
+
+pub mod http2_frame;

@@ -1,4 +1,4 @@
-"""NHP-KNK payload models and related data structures for the ZTCPP protocol."""
+"""NHP-KNK payload models and related data structures for the NHP-SBA protocol."""
 
 from __future__ import annotations
 
@@ -17,8 +17,8 @@ class ExecutionWindow(BaseModel):
     end_time: int = Field(..., description="Unix timestamp end")
 
 
-class ZtcppIntent(BaseModel):
-    """Represents the ZTCPP intent embedded in the JWS signed payload."""
+class NhpSbaIntent(BaseModel):
+    """Represents the NHP-SBA intent embedded in the JWS signed payload."""
 
     action_class: str = Field(
         ...,
@@ -33,8 +33,8 @@ class ZtcppIntent(BaseModel):
     )
 
 
-class ZtcppContext(BaseModel):
-    """Operational context for the ZTCPP request."""
+class NhpSbaContext(BaseModel):
+    """Operational context for the NHP-SBA request."""
 
     current_edns: float = Field(..., ge=0.0, le=1.0)
     current_cei: int = Field(..., ge=0, le=100)
@@ -52,6 +52,6 @@ class NhpKnkPayload(BaseModel):
     public_key: str = Field(..., min_length=1)
     jws: str = Field(..., min_length=1)
 
-    ztcpp_intent: ZtcppIntent
-    ztcpp_context: ZtcppContext
-    ztcpp_sat_fragment: str = Field(..., min_length=1)
+    nhp_sba_intent: NhpSbaIntent
+    nhp_sba_context: NhpSbaContext
+    nhp_sba_sat_fragment: str = Field(..., min_length=1)

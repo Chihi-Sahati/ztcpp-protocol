@@ -1,4 +1,4 @@
-# ZTCPP Reference Architecture & Implementation Plan
+# NHP-SBA Reference Architecture & Implementation Plan
 
 ## PHASE 1 — REPOSITORY AUDIT
 
@@ -14,7 +14,7 @@
 3. **Hardcoded Dependencies**: Simulations bypass standard network serialization (e.g., protobuf, flatbuffers), heavily relying on in-memory object passing.
 
 ### Missing Modules
-1. **`agentdns/`**: A fully functional Intent Resolution daemon routing out-of-band requests.
+1. **`nhp_nrs/`**: A fully functional Intent Resolution daemon routing out-of-band requests.
 2. **`sat/`**: A standalone System Authentication Token lifecycle manager.
 3. **`sba/`**: The actual 3GPP Service Based Architecture proxy/sidecar for mediating 5G Core Network Functions (NFs).
 4. **`experiments/`**: Hardware Abstraction Layers (HAL) bridging the protocol with USRP and TMYTEK SDR platforms.
@@ -27,15 +27,15 @@
 
 ## PHASE 2 — TARGET ARCHITECTURE
 
-The repository will be structured to support a production-grade, modular orchestration of the ZTCPP paradigm.
+The repository will be structured to support a production-grade, modular orchestration of the NHP-SBA paradigm.
 
 ### Directory Tree
 
 ```text
-ztcpp/
+nhp_sba/
 ├── core/               # Shared protocol buffers, flatbuffers, and normative data structures
 ├── nhp/                # Node Handshake Protocol daemon (AbC Edge Gateway)
-├── agentdns/           # Out-of-band Intent Resolution engine
+├── nhp_nrs/           # Out-of-band Intent Resolution engine
 ├── sat/                # SAT Validation & Lifecycle Management
 ├── safety-gates/       # MAMA deterministic policy engine (Funding, Safety, Value)
 ├── crypto/             # Ed25519, HKDF, Noise IK cryptographic wrappers
@@ -60,7 +60,7 @@ ztcpp/
 - Implement the Fail-Closed 5-state machine.
 - Integrate eBPF/XDP hooks to drop unverified packets before kernel TCP/IP stack allocation.
 
-### Phase 3: AgentDNS
+### Phase 3: NHP-NRS
 - Develop the intent-based routing table.
 - Implement UDP/TCP DNS-like query resolution for autonomous agents.
 
@@ -90,12 +90,12 @@ ztcpp/
 - **USRP X440**: Broad spectrum RF transceiver.
 - **TMYTEK UD Box 0630**: mmWave Up/Down Converter for 5G FR3 bands.
 - **Antenna**: 4T4R MIMO architecture.
-- **Software**: GNU Radio, ZTCPP Python/C++ SDKs.
+- **Software**: GNU Radio, NHP-SBA Python/C++ SDKs.
 
 ### Design Specifications
-- **APIs**: An async Python/C++ HAL that maps ZTCPP "Intents" directly to SDR beamforming weights and gain control parameters.
-- **Interfaces**: ZeroMQ/gRPC bridging between the ZTCPP daemon and GNU Radio out-of-tree (OOT) blocks.
-- **Telemetry Collection**: Capture EVM (Error Vector Magnitude), SNR, and latency from the TMYTEK box correlated with ZTCPP handshakes.
+- **APIs**: An async Python/C++ HAL that maps NHP-SBA "Intents" directly to SDR beamforming weights and gain control parameters.
+- **Interfaces**: ZeroMQ/gRPC bridging between the NHP-SBA daemon and GNU Radio out-of-tree (OOT) blocks.
+- **Telemetry Collection**: Capture EVM (Error Vector Magnitude), SNR, and latency from the TMYTEK box correlated with NHP-SBA handshakes.
 
 ---
 
@@ -103,13 +103,13 @@ ztcpp/
 
 ### Scenario A: Autonomous Beamforming Authorization
 - **Objective**: Validate that a drone agent can securely request and adjust beamforming arrays.
-- **Workflow**: Agent -> AgentDNS (Resolution) -> NHP (AbC Verification) -> MAMA (Safety Check) -> SDR HAL.
+- **Workflow**: Agent -> NHP-NRS (Resolution) -> NHP (AbC Verification) -> MAMA (Safety Check) -> SDR HAL.
 - **Metrics**: End-to-end latency, Cryptographic verification time.
 - **Expected Results**: Complete handshake < 2ms, authorized physical beam steer.
 
-### Scenario B: AgentDNS Resolution
+### Scenario B: NHP-NRS Resolution
 - **Objective**: Verify topological abstraction.
-- **Workflow**: Agent queries `intent=monitor_amf`, AgentDNS returns dynamic cryptographic token and routing endpoint.
+- **Workflow**: Agent queries `intent=monitor_amf`, NHP-NRS returns dynamic cryptographic token and routing endpoint.
 - **Expected Results**: Resolution without exposing internal IP architecture.
 
 ### Scenario C: SAT Validation
@@ -155,7 +155,7 @@ ztcpp/
 1. [x] **Repository Roadmap**: Outlined in Phase 3.
 2. [x] **Directory Tree**: Defined in Phase 2.
 3. [x] **Module Specifications**: High-level specs integrated into architecture design.
-4. [ ] **API Specifications**: (Pending) OpenAPI YAML specs for NHP and AgentDNS.
+4. [ ] **API Specifications**: (Pending) OpenAPI YAML specs for NHP and NHP-NRS.
 5. [ ] **Sequence Diagrams**: (Pending) MermaidJS diagrams for AbC Handshake.
 6. [ ] **Class Diagrams**: (Pending) MermaidJS diagrams for MAMA Safety Gates.
 7. [x] **Implementation Priorities**: Phase 1 (Core) -> Phase 2 (NHP) -> Phase 5 (MAMA).

@@ -15,7 +15,7 @@ class SafetyGateEvaluator:
         """
         logger.info(f"Evaluating safety gate for intent {intent_class} to {target_service}")
         
-        # Simulated logic based on IntentClass (from ztcpp.fbs)
+        # Simulated logic based on IntentClass (from nhp_sba.fbs)
         # 1: TELEMETRY, 2: CONTROL, 3: DATA_PLANE, 4: EMERGENCY
         
         if intent_class == 4: # EMERGENCY

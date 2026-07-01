@@ -59,8 +59,8 @@ class NhpKnkParser:
                 "version",
             )
             
-        intent = payload.ztcpp_intent
-        context = payload.ztcpp_context
+        intent = payload.nhp_sba_intent
+        context = payload.nhp_sba_context
 
         if intent.action_class not in cls.VALID_ACTIONS:
             raise KnkParseError(
@@ -151,8 +151,8 @@ class NhpKnkParser:
         await cls.validate_timestamp(payload)
         logger.info(
             "KNK payload validated: action_class=%s, target_service=%s",
-            payload.ztcpp_intent.action_class,
-            payload.ztcpp_intent.target_service,
+            payload.nhp_sba_intent.action_class,
+            payload.nhp_sba_intent.target_service,
         )
         return payload
 

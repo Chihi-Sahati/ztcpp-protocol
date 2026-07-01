@@ -16,7 +16,7 @@ pub struct ExecutionWindow {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-pub struct ZtcppIntent {
+pub struct NhpSbaIntent {
     pub action_class: String,
     pub target_service: String,
     pub impact_scope: ImpactScope,
@@ -24,7 +24,7 @@ pub struct ZtcppIntent {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-pub struct ZtcppContext {
+pub struct NhpSbaContext {
     pub current_edns: f64,
     pub current_cei: u32,
     pub active_alarms: u32,
@@ -38,9 +38,9 @@ pub struct ZtcppContext {
 /// Both runtimes must serialize/deserialize this identically.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct NhpKnkPayload {
-    pub ztcpp_intent: ZtcppIntent,
-    pub ztcpp_context: ZtcppContext,
-    pub ztcpp_sat_fragment: String,
+    pub nhp_sba_intent: NhpSbaIntent,
+    pub nhp_sba_context: NhpSbaContext,
+    pub nhp_sba_sat_fragment: String,
     // Note: outer envelope or standard JWS claims handled elsewhere
 }
 
@@ -80,15 +80,15 @@ impl NhpKnkParser for DefaultKnkParser {
 
     fn validate_schema(payload: &NhpKnkPayload) -> Result<(), Self::Error> {
         let valid_actions = ["monitor", "remediate", "provision", "optimize"];
-        if !valid_actions.contains(&payload.ztcpp_intent.action_class.as_str()) {
-            return Err(KnkParseError::InvalidAction(payload.ztcpp_intent.action_class.clone()));
+        if !valid_actions.contains(&payload.nhp_sba_intent.action_class.as_str()) {
+            return Err(KnkParseError::InvalidAction(payload.nhp_sba_intent.action_class.clone()));
         }
-        if payload.ztcpp_context.current_edns < 0.0 || payload.ztcpp_context.current_edns > 1.0 {
+        if payload.nhp_sba_context.current_edns < 0.0 || payload.nhp_sba_context.current_edns > 1.0 {
             return Err(KnkParseError::SchemaValidation(
-                format!("EDNS score out of range: {}", payload.ztcpp_context.current_edns),
+                format!("EDNS score out of range: {}", payload.nhp_sba_context.current_edns),
             ));
         }
-        if payload.ztcpp_context.agent_confidence_score < 0.0 || payload.ztcpp_context.agent_confidence_score > 1.0 {
+        if payload.nhp_sba_context.agent_confidence_score < 0.0 || payload.nhp_sba_context.agent_confidence_score > 1.0 {
             return Err(KnkParseError::SchemaValidation(
                 "Confidence score out of range".to_string(),
             ));
@@ -106,7 +106,7 @@ mod tests {
         temporal.insert("session_duration_ms".to_string(), 300000);
 
         NhpKnkPayload {
-            ztcpp_intent: ZtcppIntent {
+            nhp_sba_intent: NhpSbaIntent {
                 action_class: "monitor".to_string(),
                 target_service: "amf.5gc.svc".to_string(),
                 impact_scope: ImpactScope {
@@ -116,14 +116,14 @@ mod tests {
                 },
                 temporal_bounds: temporal,
             },
-            ztcpp_context: ZtcppContext {
+            nhp_sba_context: NhpSbaContext {
                 current_edns: 0.15,
                 current_cei: 85,
                 active_alarms: 0,
                 ongoing_remediations: 0,
                 agent_confidence_score: 0.98,
             },
-            ztcpp_sat_fragment: "base64encodedfragment".to_string(),
+            nhp_sba_sat_fragment: "base64encodedfragment".to_string(),
         }
     }
 
@@ -132,7 +132,7 @@ mod tests {
         let payload = make_payload();
         let json = serde_json::to_vec(&payload).expect("serialize");
         let parsed = DefaultKnkParser::parse(&json).expect("parse");
-        assert_eq!(parsed.ztcpp_intent.action_class, "monitor");
+        assert_eq!(parsed.nhp_sba_intent.action_class, "monitor");
     }
 
     #[test]
@@ -154,7 +154,7 @@ mod tests {
     #[test]
     fn test_validate_schema_invalid_action() {
         let mut payload = make_payload();
-        payload.ztcpp_intent.action_class = "read".to_string(); // Invalid per paper
+        payload.nhp_sba_intent.action_class = "read".to_string(); // Invalid per paper
         assert!(matches!(
             DefaultKnkParser::validate_schema(&payload).unwrap_err(),
             KnkParseError::InvalidAction(_)

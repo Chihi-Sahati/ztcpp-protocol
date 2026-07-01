@@ -86,7 +86,7 @@ class PolicyDecisionEngine:
         logger.info(
             "Policy evaluation started. request_id=%s, node_id=%s",
             request_id,
-            payload.ztcpp_intent.target_service,
+            payload.nhp_sba_intent.target_service,
         )
 
         # Step 1: JWT validation (fail-closed)
@@ -98,7 +98,7 @@ class PolicyDecisionEngine:
                 "Policy REJECTED by JWT validation. request_id=%s, "
                 "node_id=%s, reason=%s, detail=%s",
                 request_id,
-                payload.ztcpp_intent.target_service,
+                payload.nhp_sba_intent.target_service,
                 rejection.value,
                 exc.message,
             )
@@ -110,9 +110,9 @@ class PolicyDecisionEngine:
 
         # Step 2: MAMA Safety Gate evaluation (fail-closed)
         gate_result, gate_reason, gate_evaluations = await self._mama_gate.evaluate(
-            edns_score=payload.ztcpp_context.current_edns,
+            edns_score=payload.nhp_sba_context.current_edns,
             cei_metrics=cei_metrics,
-            capabilities=[payload.ztcpp_intent.action_class],
+            capabilities=[payload.nhp_sba_intent.action_class],
         )
 
         if gate_result == GateResult.REJECT:
@@ -121,7 +121,7 @@ class PolicyDecisionEngine:
                 "Policy REJECTED by MAMA gate. request_id=%s, node_id=%s, "
                 "gate_reason=%s",
                 request_id,
-                payload.ztcpp_intent.target_service,
+                payload.nhp_sba_intent.target_service,
                 mapped_reason.value if mapped_reason else "unknown",
             )
             return PolicyResult(
@@ -138,8 +138,8 @@ class PolicyDecisionEngine:
         logger.info(
             "Policy APPROVED. request_id=%s, node_id=%s, capabilities=%s",
             request_id,
-            payload.ztcpp_intent.target_service,
-            [payload.ztcpp_intent.action_class],
+            payload.nhp_sba_intent.target_service,
+            [payload.nhp_sba_intent.action_class],
         )
         return PolicyResult(
             decision=PolicyDecision.APPROVE,
@@ -175,8 +175,8 @@ class PolicyDecisionEngine:
 
         return {
             "session_id": str(uuid.uuid4()),
-            "node_id": payload.ztcpp_intent.target_service,
-            "granted_capabilities": [payload.ztcpp_intent.action_class],
+            "node_id": payload.nhp_sba_intent.target_service,
+            "granted_capabilities": [payload.nhp_sba_intent.action_class],
             "expires_at": int(time.time()) + 3600,
             "mama_gate_results": {
                 ev.gate_name: ev.passed for ev in gate_evaluations

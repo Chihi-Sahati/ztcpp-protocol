@@ -1,4 +1,4 @@
-"""NHP JWT/JWS Validation Engine.
+"""NHP-SBA JWT/JWS Validation Engine.
 
 This is the most critical security module in the NHP-Server (PDP).
 It validates the NHP-KNK payload by verifying the embedded JWS token
@@ -10,13 +10,13 @@ Validation Pipeline (fail-closed at every step):
 3. Verify the JWS signature with the Ed25519 public key.
 4. Validate standard JWT claims: iss, aud, exp.
 5. Enforce strict 60-second expiration bound.
-6. Validate ztcpp_intent structure (action_class, aomm_level).
+6. Validate nhp_sba_intent structure (action_class, aomm_level).
 7. Cross-validate cleartext KNK fields (nonce, node_id, timestamp)
    against the corresponding claims in the signed JWS payload.
 
 Cleartext Headers (in KNK, NOT signed): nonce, timestamp, public_key
 Signed Payload Claims (in JWS): iss, aud, exp, edns_score, capabilities,
-  node_id, ztcpp_intent, ztcpp_context, nonce, timestamp
+  node_id, nhp_sba_intent, nhp_sba_context, nonce, timestamp
 """
 
 from __future__ import annotations
@@ -26,7 +26,7 @@ import time
 import logging
 from typing import Optional
 
-from app.models.knk import NhpKnkPayload, ZtcppIntent
+from app.models.knk import NhpKnkPayload, NhpSbaIntent
 from app.security.jws import JwsVerifier, JwsVerificationError
 from app.security.trust_store import TrustStore, TrustStoreError
 
@@ -57,13 +57,13 @@ class NhpJwtValidator:
     potentially compromised and will be rejected.
     """
 
-    EXPECTED_AUDIENCE: str = "ztcpp-nhp-server"
+    EXPECTED_AUDIENCE: str = "nhp-sba-server"
     MAX_CLOCK_SKEW_SECONDS: int = 5
     STRICT_EXP_BOUND_SECONDS: int = 60
     VALID_ISSUERS: list[str] = [
-        "ztcpp-agent",
-        "ztcpp-soc",
-        "ztcpp-operator",
+        "nhp-sba-agent",
+        "nhp-sba-soc",
+        "nhp-sba-operator",
     ]
 
     def __init__(self, trust_store: TrustStore) -> None:
@@ -90,7 +90,7 @@ class NhpJwtValidator:
         2. Verify public key is trusted
         3. Verify JWS signature (Ed25519)
         4. Validate standard claims (iss, aud, exp)
-        5. Validate ztcpp_intent structure
+        5. Validate nhp_sba_intent structure
         6. Cross-validate cleartext fields vs JWS claims
 
         Args:
@@ -116,8 +116,8 @@ class NhpJwtValidator:
         self._validate_audience(claims)
         self._validate_expiration(claims)
 
-        # Step 5: Validate ztcpp_intent
-        self._validate_ztcpp_intent(claims)
+        # Step 5: Validate nhp_sba_intent
+        self._validate_nhp_sba_intent(claims)
 
         # Step 6: Cross-validate cleartext with signed claims
         self._cross_validate(payload, claims)
@@ -202,7 +202,7 @@ class NhpJwtValidator:
     def _validate_issuer(self, claims: dict) -> None:
         """Validate the 'iss' (issuer) claim.
 
-        The issuer must be one of the allowed ZTCPP issuers.
+        The issuer must be one of the allowed NHP-SBA issuers.
 
         Args:
             claims: Verified JWS claims.
@@ -285,8 +285,8 @@ class NhpJwtValidator:
                 "clock_skew_exceeded",
             )
 
-    def _validate_ztcpp_intent(self, claims: dict) -> None:
-        """Validate the 'ztcpp_intent' claim structure.
+    def _validate_nhp_sba_intent(self, claims: dict) -> None:
+        """Validate the 'nhp_sba_intent' claim structure.
 
         Must contain 'action_class' (one of: read, write, execute, manage)
         and 'aomm_level' (integer 0-5).
@@ -295,12 +295,12 @@ class NhpJwtValidator:
             claims: Verified JWS claims.
 
         Raises:
-            JwtValidationError: If ztcpp_intent is missing or malformed.
+            JwtValidationError: If nhp_sba_intent is missing or malformed.
         """
-        intent = claims.get("ztcpp_intent")
+        intent = claims.get("nhp_sba_intent")
         if not isinstance(intent, dict):
             raise JwtValidationError(
-                "Missing or invalid 'ztcpp_intent' claim. Must be a JSON object.",
+                "Missing or invalid 'nhp_sba_intent' claim. Must be a JSON object.",
                 "missing_claim",
             )
 

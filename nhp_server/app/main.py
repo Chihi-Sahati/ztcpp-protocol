@@ -18,9 +18,9 @@ from app.api.dependencies import (
     create_trust_store,
     create_jwt_validator,
 )
-from app.api.middleware import RateLimitMiddleware, RequestLoggingMiddleware, ZtcppSbaMediationMiddleware
+from app.api.middleware import RateLimitMiddleware, RequestLoggingMiddleware, NhpSbaSbaMediationMiddleware
 from app.api.routes import router
-from app.api.agentdns import router as agentdns_router
+from app.api.nhp_nrs import router as nhp_nrs_router
 from app.policy.mama_gate import MAMASafetyGate
 from app.security.jwt_validation import NhpJwtValidator
 from app.policy.decision_engine import PolicyDecisionEngine
@@ -59,20 +59,20 @@ async def lifespan(app: FastAPI):
 def create_app() -> FastAPI:
     """Create and configure the FastAPI application."""
     app = FastAPI(
-        title="ZTCPP NHP-Server",
+        title="NHP-SBA NHP-Server",
         description="Policy Decision Point (PDP) for the Zero Trust Control and Policy Protocol",
         version="1.0.0",
         lifespan=lifespan,
     )
 
     # Middleware
-    app.add_middleware(ZtcppSbaMediationMiddleware)
+    app.add_middleware(NhpSbaSbaMediationMiddleware)
     app.add_middleware(RequestLoggingMiddleware)
     app.add_middleware(RateLimitMiddleware, max_requests=100, window_seconds=60)
 
     # Routes
     app.include_router(router)
-    app.include_router(agentdns_router, prefix="/api/v1/agentdns", tags=["agentdns"])
+    app.include_router(nhp_nrs_router, prefix="/api/v1/nhp_nrs", tags=["nhp_nrs"])
 
     return app
 

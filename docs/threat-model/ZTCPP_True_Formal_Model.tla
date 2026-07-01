@@ -1,4 +1,4 @@
------------------------ MODULE ZTCPP_True_Formal_Model -----------------------
+----------------------- MODULE NHP-SBA_True_Formal_Model -----------------------
 EXTENDS Integers, FiniteSets, Sequences, TLC
 
 CONSTANTS 

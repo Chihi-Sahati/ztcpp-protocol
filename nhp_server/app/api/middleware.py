@@ -91,38 +91,37 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         return await call_next(request)
 
 
-class ZtcppSbaMediationMiddleware(BaseHTTPMiddleware):
-    """ZTCPP 3GPP SBA Mediation Middleware.
-    
-    Enforces the Authenticated-before-Connect policy on 3GPP SBI (Service-Based Interface) interactions.
-    Validates the presence and structure of ZTCPP-Auth-Context and ZTCPP-Flow-Bind headers.
+class NhpSbaMediationMiddleware(BaseHTTPMiddleware):
+    """NHP-SBA 3GPP SBA Mediation Middleware.
+
+    Enforces the Authenticated-before-Connect policy on 3GPP SBI (Service-Based
+    Interface) interactions. Validates the presence and structure of
+    NHP-SBA-Auth-Context and NHP-SBA-Flow-Bind headers.
+
+    Note: Per the NHP-SBA specification, PEPs MUST NOT use standard HTTP/2
+    headers. Instead, HTTP/2 Custom Frame Extensions (Type 0x1A) transfer
+    binary FlatBuffers tokens. This middleware provides HTTP-based fallback
+    validation for development/testing environments.
     """
 
     async def dispatch(self, request: Request, call_next) -> Response:
-        """Validate ZTCPP headers on SBA paths."""
+        """Validate NHP-SBA headers on SBA paths."""
         # Only apply to SBA paths
         if not request.url.path.startswith("/api/v1/sba/"):
             return await call_next(request)
 
-        auth_context = request.headers.get("ztcpp-auth-context")
-        flow_bind = request.headers.get("ztcpp-flow-bind")
-
-        from starlette.responses import JSONResponse
-
-        if not auth_context:
-            logger.warning("Missing ZTCPP-Auth-Context header on SBA request")
-            return JSONResponse(status_code=403, content={"error": "Missing ZTCPP-Auth-Context header"})
-
-        if not flow_bind:
-            logger.warning("Missing ZTCPP-Flow-Bind header on SBA request")
-            return JSONResponse(status_code=403, content={"error": "Missing ZTCPP-Flow-Bind header"})
+        if auth_context or flow_bind:
+            logger.error("DEPRECATED: NHP-SBA standard HTTP/2 headers are deprecated. Use Custom Frame Extension (Type 0x1A)")
+            from starlette.responses import JSONResponse
+            return JSONResponse(status_code=400, content={"error": "NHP-SBA standard HTTP/2 headers are deprecated. MUST use Custom Frame Extension (Type 0x1A)"})
 
         # Validate flow_bind format (sha256=<hex-digest>;tunnel=<micro-tunnel-id>)
         if not (flow_bind.startswith("sha256=") and ";tunnel=" in flow_bind):
-            logger.warning("Invalid ZTCPP-Flow-Bind header format")
-            return JSONResponse(status_code=403, content={"error": "Invalid ZTCPP-Flow-Bind header format"})
+            logger.warning("Invalid NHP-SBA-Flow-Bind header format")
+            return JSONResponse(status_code=403, content={"error": "Invalid NHP-SBA-Flow-Bind header format"})
 
-        # In a real implementation, the SAT JWT inside auth_context would be fully verified here.
-        # It should match the current micro-tunnel session and intent.
+        # In a real implementation, the SAT JWT inside auth_context would be fully
+        # verified here. It should match the current micro-tunnel session and intent.
+        # TODO: Replace HTTP header mediation with HTTP/2 Custom Frame Extension (Type 0x1A)
 
         return await call_next(request)

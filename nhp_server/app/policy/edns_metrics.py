@@ -1,6 +1,6 @@
 """EDNS Metrics computation and evaluation module.
 
-Expected Demand Not Served (EDNS) is a key metric in the ZTCPP protocol
+Expected Demand Not Served (EDNS) is a key metric in the NHP-SBA protocol
 that quantifies the projected demand that would remain unmet if the
 requested operation were allowed to proceed. A higher EDNS score indicates
 greater potential disruption to network services.

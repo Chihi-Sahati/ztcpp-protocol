@@ -1,4 +1,4 @@
-# Zero Trust Control and Policy Protocol (ZTCPP)
+# Zero Trust Control and Policy Protocol (NHP-SBA)
 **Normative protocol specification for zero-trust control-plane communication in autonomous, agent-driven 5G/6G networks.**
 
 **License:** MIT | **Code style:** black (Python), rustfmt (Rust)
@@ -14,9 +14,9 @@
 ---
 
 <p align="center">
-  <img src="docs/architecture/1.png" alt="ZTCPP Architecture Part 1" width="100%">
+  <img src="docs/architecture/1.png" alt="NHP-SBA Architecture Part 1" width="100%">
   <br>
-  <img src="docs/architecture/2.png" alt="ZTCPP Architecture Part 2" width="100%">
+  <img src="docs/architecture/2.png" alt="NHP-SBA Architecture Part 2" width="100%">
 </p>
 
 ---
@@ -24,9 +24,9 @@
 ## Abstract
 In legacy IP architectures, connection establishment precedes authentication, inherently exposing critical 5G/6G control planes to reconnaissance and severe resource-exhaustion attacks (Signaling Storms). As next-generation networks transition from static Network Operations Centers (NOC) to autonomous, agent-driven Service Operations Centers (SOC), a proactive security paradigm is paramount. 
 
-In this research, we propose the **Zero Trust Control and Policy Protocol (ZTCPP)**, a normative specification that enforces a strict **"Authenticated-before-Connect" (AbC)** workflow. By leveraging out-of-band Intent Resolution (**AgentDNS**), **FlatBuffers** serialization over the **Noise Protocol Framework (Curve25519/ChaCha20-Poly1305)**, and a deterministic policy engine based on the **Metrics-driven Autonomous Management Architecture (MAMA)**, ZTCPP formally verifies, authenticates, and filters autonomous agents at the absolute network edge. 
+In this research, we propose the **Zero Trust Control and Policy Protocol (NHP-SBA)**, a normative specification that enforces a strict **"Authenticated-before-Connect" (AbC)** workflow. By leveraging out-of-band Intent Resolution (**NHP-NRS**), **FlatBuffers** serialization over the **Noise Protocol Framework (Curve25519/ChaCha20-Poly1305)**, and a deterministic policy engine based on the **Metrics-driven Autonomous Management Architecture (MAMA)**, NHP-SBA formally verifies, authenticates, and filters autonomous agents at the absolute network edge. 
 
-Extensive integrations comparing our model to legacy configurations demonstrate that ZTCPP completely mitigates lateral movement within 3GPP Service Based Architectures (SBA). Under high-volume signaling storms (>100,000 requests/sec), the Rust-based ZTCPP enforcement node maintains a flat zero-allocation memory footprint and sub-millisecond revocation latency (**< 1.63 ms**), proving absolute **Sovereign Digital Immunity**.
+Extensive integrations comparing our model to legacy configurations demonstrate that NHP-SBA completely mitigates lateral movement within 3GPP Service Based Architectures (SBA). Under high-volume signaling storms (>100,000 requests/sec), the Rust-based NHP-SBA enforcement node maintains a flat zero-allocation memory footprint and sub-millisecond revocation latency (**< 1.63 ms**), proving absolute **Sovereign Digital Immunity**.
 
 ---
 
@@ -35,7 +35,7 @@ This repository implements a strict hardware-level isolation between the Policy 
 
 | Directory | Description |
 |---|---|
-| `core/` | Normative Data Structures (`ztcpp.fbs`). Zero-copy FlatBuffers schemas for high-speed NHP payloads. |
+| `core/` | Normative Data Structures (`nhp_sba.fbs`). Zero-copy FlatBuffers schemas for high-speed NHP payloads. |
 | `nhp_ac/` | **(Rust)** Policy Enforcement Point (PEP). Zero-allocation ingress pipeline with ChaCha20-Poly1305 and Ed25519 validation. |
 | `nhp_server/` | **(Python)** Policy Decision Point (PDP). Evaluates deterministic MAMA Safety Gates and issues SAT JWTs. |
 | `integration/` | End-to-end benchmarking scripts and consolidated performance artifacts/telemetry. |
@@ -75,7 +75,7 @@ This repository implements a strict hardware-level isolation between the Policy 
 - **FlatBuffers Compiler:** `flatc` (Must be available in system PATH)
 
 ### 1. Build the Rust Enforcement Node (NHP-AC)
-The build script automatically compiles the `ztcpp.fbs` schema into zero-copy Rust bindings.
+The build script automatically compiles the `nhp_sba.fbs` schema into zero-copy Rust bindings.
 ```bash
 cd nhp_ac
 cargo build --release
@@ -123,7 +123,7 @@ A session is autonomously denied and triggering immediate micro-tunnel teardown 
 If you find this protocol specification or simulation framework useful in your research, please consider citing:
 
 ```bibtex
-@article{alsahati2026ztcpp,
+@article{alsahati2026nhp_sba,
   title={Zero Trust Control and Policy Protocol: Normative protocol specification for zero-trust control-plane communication in autonomous, agent-driven 5G/6G networks.},
   author={AlSahati, AlHussein A. and Chihi, Houda},
   year={2026},

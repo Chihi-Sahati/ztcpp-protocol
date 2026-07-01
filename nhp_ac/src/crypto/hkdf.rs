@@ -16,7 +16,7 @@ pub struct SessionKeyMaterial {
 ///
 /// Uses HKDF with the following parameters:
 /// - Hash: SHA-256
-/// - Salt: "ztcpp-nhp-session" (protocol-specific)
+/// - Salt: "nhp_sba-nhp-session" (protocol-specific)
 /// - Info: "nhp-session-keys-v1" (key derivation label)
 ///
 /// Extracts 76 bytes: 32 (enc key) + 32 (dec key) + 12 (nonce)
@@ -31,7 +31,7 @@ pub struct SessionKeyMaterial {
 /// Returns an error if key derivation fails.
 pub fn derive_session_keys(shared_secret: &[u8]) -> Result<SessionKeyMaterial, String> {
     let hk = Hkdf::<Sha256>::new(
-        Some(b"ztcpp-nhp-session"),
+        Some(b"nhp_sba-nhp-session"),
         shared_secret,
     );
 
@@ -60,7 +60,7 @@ pub fn derive_session_keys(shared_secret: &[u8]) -> Result<SessionKeyMaterial, S
 /// Derive a single key from shared secret with custom info label.
 pub fn derive_key(shared_secret: &[u8], info: &[u8], output_len: usize) -> Result<Vec<u8>, String> {
     let hk = Hkdf::<Sha256>::new(
-        Some(b"ztcpp-nhp-session"),
+        Some(b"nhp_sba-nhp-session"),
         shared_secret,
     );
     let mut output = vec![0u8; output_len];

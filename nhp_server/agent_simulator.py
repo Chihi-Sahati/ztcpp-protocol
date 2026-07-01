@@ -26,7 +26,7 @@ from rich import print as rprint
 
 console = Console()
 
-ZTCPP_LOGO = """
+NHP-SBA_LOGO = """
  [cyan]███████╗████████╗ ██████╗██████╗ ██████╗ [/cyan]
  [cyan]╚══███╔╝╚══██╔══╝██╔════╝██╔══██╗██╔══██╗[/cyan]
  [cyan]  ███╔╝    ██║   ██║     ██████╔╝██████╔╝[/cyan]
@@ -37,7 +37,7 @@ ZTCPP_LOGO = """
 
 def print_header():
     console.clear()
-    logo_text = Text.from_markup(ZTCPP_LOGO)
+    logo_text = Text.from_markup(NHP-SBA_LOGO)
     credits_text = Text()
     credits_text.append("\nZero Trust Control and Policy Protocol\n", style="bold white")
     credits_text.append("Advanced Reference Implementation Simulator\n\n", style="italic dim white")
@@ -79,9 +79,9 @@ def generate_knk_payload(key, node_id, edns=0.15, confidence=0.98, time_offset=0
     header = {"alg": "EdDSA"}
     nonce_val = base64.b64encode(uuid.uuid4().bytes).decode()
     jws_payload = {
-        "iss": "ztcpp-agent", "aud": "ztcpp-nhp-server", "exp": int(time.time()) + 30 + time_offset,
+        "iss": "nhp_sba-agent", "aud": "nhp_sba-nhp-server", "exp": int(time.time()) + 30 + time_offset,
         "node_id": node_id, "nonce": nonce_val,
-        "timestamp": int(time.time()), "ztcpp_intent": intent, "ztcpp_context": context
+        "timestamp": int(time.time()), "nhp_sba_intent": intent, "nhp_sba_context": context
     }
     token = jws.JWS(json.dumps(jws_payload).encode("utf-8"))
     token.add_signature(key, None, json.dumps(header), None)
@@ -89,7 +89,7 @@ def generate_knk_payload(key, node_id, edns=0.15, confidence=0.98, time_offset=0
     knk = {
         "version": "1.0", "node_id": node_id, "timestamp": jws_payload["timestamp"],
         "nonce": jws_payload["nonce"], "public_key": base64.b64encode(base64.urlsafe_b64decode(key.export_public(as_dict=True)["x"] + "===")[:32]).decode(),
-        "jws": token.serialize(compact=True), "ztcpp_intent": intent, "ztcpp_context": context, "ztcpp_sat_fragment": "sat-fragment-001"
+        "jws": token.serialize(compact=True), "nhp_sba_intent": intent, "nhp_sba_context": context, "nhp_sba_sat_fragment": "sat-fragment-001"
     }
     return knk
 
@@ -113,10 +113,10 @@ def run_simulation():
 
         with Live(Spinner("dots", text="[yellow]Running Scenarios..."), transient=True, console=console):
             
-            # Scenario 1: Valid AgentDNS Resolution
+            # Scenario 1: Valid NHP-NRS Resolution
             q_payload, sig, jti, iat, exp = generate_agent_dns_query(trusted_key, "amf.5gc.svc")
-            r1 = client.post("/api/v1/agentdns/resolve", json=q_payload, headers={"jws-signature": sig, "jti": jti, "iat": str(iat), "exp": str(exp)})
-            results.append(("1. AgentDNS Intent Resolution", "Valid Intent 'monitor'", "200 OK", "200 OK" if r1.status_code == 200 else str(r1.status_code)))
+            r1 = client.post("/api/v1/nhp_nrs/resolve", json=q_payload, headers={"jws-signature": sig, "jti": jti, "iat": str(iat), "exp": str(exp)})
+            results.append(("1. NHP-NRS Intent Resolution", "Valid Intent 'monitor'", "200 OK", "200 OK" if r1.status_code == 200 else str(r1.status_code)))
 
             # Scenario 2: Valid Cryptographic Handshake
             p2 = generate_knk_payload(trusted_key, trusted_node_id)
@@ -166,16 +166,16 @@ def run_simulation():
 
             # Scenario 9: Unauthenticated SBA Access
             r9 = client.get("/api/v1/sba/resource")
-            results.append(("9. SBA Mediation Bypass", "Access SBA without ZTCPP Headers", "403", str(r9.status_code)))
+            results.append(("9. SBA Mediation Bypass", "Access SBA without NHP-SBA Headers", "403", str(r9.status_code)))
 
             # Scenario 10: Authenticated SBA Access
-            r10 = client.get("/api/v1/sba/resource", headers={"ztcpp-auth-context": "jwt-sat", "ztcpp-flow-bind": "sha256=abc;tunnel=123"})
-            results.append(("10. Authenticated SBA Access", "Access SBA with ZTCPP Headers", "404", str(r10.status_code)))
+            r10 = client.get("/api/v1/sba/resource", headers={"nhp_sba-auth-context": "jwt-sat", "nhp_sba-flow-bind": "sha256=abc;tunnel=123"})
+            results.append(("10. Authenticated SBA Access", "Access SBA with NHP-SBA Headers", "404", str(r10.status_code)))
             
             time.sleep(1) # Dramatic pause
 
         # Build Master Table
-        matrix = Table(title="ZTCPP Strict Security Test Matrix", show_header=True, header_style="bold magenta", expand=True)
+        matrix = Table(title="NHP-SBA Strict Security Test Matrix", show_header=True, header_style="bold magenta", expand=True)
         matrix.add_column("No.", style="dim", width=4)
         matrix.add_column("Test Scenario", style="cyan")
         matrix.add_column("Attack Vector / State", style="yellow")

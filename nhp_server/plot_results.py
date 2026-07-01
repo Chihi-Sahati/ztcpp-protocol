@@ -15,8 +15,8 @@ def plot_metrics():
     
     # Setup custom colors
     legacy_color = "#e74c3c" # Red
-    ztcpp_color = "#2ecc71"  # Green
-    palette = {"Legacy (TCP/TLS/App Auth)": legacy_color, "ZTCPP (Authenticated-before-Connect)": ztcpp_color}
+    nhp_sba_color = "#2ecc71"  # Green
+    palette = {"Legacy (TCP/TLS/App Auth)": legacy_color, "NHP-SBA (Authenticated-before-Connect)": nhp_sba_color}
 
     # ==========================================
     # 1. Throughput vs Latency Chart
@@ -93,10 +93,10 @@ def plot_metrics():
     import matplotlib.lines as mlines
     legacy_cpu = mlines.Line2D([], [], color=legacy_color, linestyle='-', label='Legacy CPU %')
     legacy_ram = mlines.Line2D([], [], color=legacy_color, linestyle='--', label='Legacy RAM MB')
-    ztcpp_cpu = mlines.Line2D([], [], color=ztcpp_color, linestyle='-', label='ZTCPP CPU %')
-    ztcpp_ram = mlines.Line2D([], [], color=ztcpp_color, linestyle='--', label='ZTCPP RAM MB')
+    nhp_sba_cpu = mlines.Line2D([], [], color=nhp_sba_color, linestyle='-', label='NHP-SBA CPU %')
+    nhp_sba_ram = mlines.Line2D([], [], color=nhp_sba_color, linestyle='--', label='NHP-SBA RAM MB')
     
-    plt.legend(handles=[legacy_cpu, legacy_ram, ztcpp_cpu, ztcpp_ram], loc='upper left', fontsize=10)
+    plt.legend(handles=[legacy_cpu, legacy_ram, nhp_sba_cpu, nhp_sba_ram], loc='upper left', fontsize=10)
     
     fig.tight_layout()  
     plt.savefig("resource_footprint.png", dpi=300, bbox_inches='tight')

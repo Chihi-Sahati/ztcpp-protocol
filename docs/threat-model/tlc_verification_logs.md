@@ -1,7 +1,7 @@
 # TLC Model Checking Results & Formal Verification Logs
 
 **Date**: 2026-06-15
-**Model**: `ztcpp_adversarial_model.tla`
+**Model**: `nhp_sba_adversarial_model.tla`
 **Depth Constraints**: MaxNonce=10, MaxTime=20
 **Status**: VERIFIED & PASS
 
@@ -50,7 +50,7 @@ Injected via `MaliciousReplay(a)` action. The adversary arbitrarily duplicated m
 
 ### NHP Handshake Interruption & Partial State Corruption
 Injected via `StateCorruption(a)` action, forcibly migrating states to `"CORRUPTED"`.
-- **Result**: The `GatewayRecoverCorruption` transition proved to handle the state effectively. Because ZTCPP is "Fail-Closed", corrupted states are instantly reset to `"LISTEN"` and all memory buffers associated with the parsing are flushed.
+- **Result**: The `GatewayRecoverCorruption` transition proved to handle the state effectively. Because NHP-SBA is "Fail-Closed", corrupted states are instantly reset to `"LISTEN"` and all memory buffers associated with the parsing are flushed.
 
 ### Byzantine Behavior in NHP-AC (Policy Engine)
 Injected via `ByzantineTrigger` action, simulating a compromised NHP-AC arbitrarily granting access regardless of EDNS/CEI safety constraints.

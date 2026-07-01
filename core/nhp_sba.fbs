@@ -1,6 +1,6 @@
-// ZTCPP FlatBuffers Schema
+// NHP-SBA FlatBuffers Schema
 // Defines the high-performance binary structures for NHP Payloads
-namespace ztcpp.schema;
+namespace nhp_sba.nhp;
 
 // The Intent Class defines the authorization scope
 enum IntentClass : byte {

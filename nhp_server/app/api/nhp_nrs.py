@@ -1,4 +1,4 @@
-"""AgentDNS - Intent-Driven Naming Resolution Service.
+"""NHP-NRS - Intent-Driven Naming Resolution Service.
 
 Replaces conventional DNS lookups with JWS-signed query tuples, binding
 resolution responses to authenticated intent declarations rather than returning
@@ -47,7 +47,7 @@ async def resolve_intent(
 ):
     """Resolve an intent to an NHP-Server identity and cryptographic capabilities.
     
-    This endpoint enforces AgentDNS rules:
+    This endpoint enforces NHP-NRS rules:
     - No IP address is returned.
     - Strict replay prevention.
     - Resolution bound to EDNS and CEI constraints.
@@ -77,7 +77,7 @@ async def resolve_intent(
 
     # 3. Return cryptographic capabilities instead of IP addresses
     return AgentDnsResponse(
-        nhp_server_id="ztcpp://server/core-pdp-01",
+        nhp_server_id="nhp_sba://server/core-pdp-01",
         public_key="base64-encoded-ed25519-public-key-here",
         supported_noise_patterns=["IK", "XX"],
         max_session_duration_ms=300000

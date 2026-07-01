@@ -10,7 +10,7 @@ Tests cover:
 - Nonce reuse detection
 - Untrusted node rejection
 - Clock skew tolerance
-- ztcpp_intent structure validation
+- nhp_sba_intent structure validation
 """
 
 from __future__ import annotations
@@ -110,15 +110,15 @@ class TestJwsVerifier:
         priv, pub, sk = generate_ed25519_keypair()
         claims = {
             "sub": "agent-001",
-            "iss": "ztcpp-agent",
-            "aud": "ztcpp-nhp-server",
+            "iss": "nhp_sba-agent",
+            "aud": "nhp_sba-nhp-server",
             "exp": int(time.time()) + 30,
         }
         token = create_jws_token(claims, sk)
         verified = JwsVerifier.verify_compact(token, pub)
         assert verified["sub"] == "agent-001"
-        assert verified["iss"] == "ztcpp-agent"
-        assert verified["aud"] == "ztcpp-nhp-server"
+        assert verified["iss"] == "nhp_sba-agent"
+        assert verified["aud"] == "nhp_sba-nhp-server"
 
 
 class TestJwtValidation:
@@ -158,8 +158,8 @@ class TestJwtValidation:
         )
 
         result = await validator.validate(payload)
-        assert result["iss"] == "ztcpp-agent"
-        assert result["aud"] == "ztcpp-nhp-server"
+        assert result["iss"] == "nhp_sba-agent"
+        assert result["aud"] == "nhp_sba-nhp-server"
         assert result["node_id"] == "agent-001"
         validator.clear_nonce_cache()
 
@@ -484,7 +484,7 @@ class TestJwtValidation:
         nonce = base64.b64encode(b"\x0c" * 24).decode("ascii")
         now = int(time.time())
         claims = create_valid_claims(node_id="agent-bad-aomm", nonce=nonce, timestamp=now)
-        claims["ztcpp_intent"]["aomm_level"] = 6  # Invalid!
+        claims["nhp_sba_intent"]["aomm_level"] = 6  # Invalid!
         token = create_jws_token(claims, sk)
 
         validator = NhpJwtValidator(store)
@@ -504,8 +504,8 @@ class TestJwtValidation:
         validator.clear_nonce_cache()
 
     @pytest.mark.asyncio
-    async def test_missing_ztcpp_intent_rejects(self, populated_trust_store):
-        """Missing ztcpp_intent claim should be rejected."""
+    async def test_missing_nhp_sba_intent_rejects(self, populated_trust_store):
+        """Missing nhp_sba_intent claim should be rejected."""
         store, _ = populated_trust_store
         priv, pub, sk = generate_ed25519_keypair()
         store.load_key_bytes("agent-no-intent", pub)
@@ -513,7 +513,7 @@ class TestJwtValidation:
         nonce = base64.b64encode(b"\x0d" * 24).decode("ascii")
         now = int(time.time())
         claims = create_valid_claims(node_id="agent-no-intent", nonce=nonce, timestamp=now)
-        del claims["ztcpp_intent"]
+        del claims["nhp_sba_intent"]
         token = create_jws_token(claims, sk)
 
         validator = NhpJwtValidator(store)
@@ -528,7 +528,7 @@ class TestJwtValidation:
             capabilities=["soc-analysis"],
         )
 
-        with pytest.raises(JwtValidationError, match="ztcpp_intent"):
+        with pytest.raises(JwtValidationError, match="nhp_sba_intent"):
             await validator.validate(payload)
         validator.clear_nonce_cache()
 
@@ -542,7 +542,7 @@ class TestJwtValidation:
         nonce = base64.b64encode(b"\x0e" * 24).decode("ascii")
         now = int(time.time())
         claims = create_valid_claims(node_id="agent-bad-action", nonce=nonce, timestamp=now)
-        claims["ztcpp_intent"]["action_class"] = "destroy"  # Invalid!
+        claims["nhp_sba_intent"]["action_class"] = "destroy"  # Invalid!
         token = create_jws_token(claims, sk)
 
         validator = NhpJwtValidator(store)
@@ -588,5 +588,5 @@ class TestJwtValidation:
         )
 
         result = await validator.validate(payload)
-        assert result["iss"] == "ztcpp-agent"
+        assert result["iss"] == "nhp_sba-agent"
         validator.clear_nonce_cache()

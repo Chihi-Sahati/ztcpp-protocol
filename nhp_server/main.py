@@ -5,7 +5,7 @@ import logging
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
-# Add the parent directory to the python path to import ztcpp modules
+# Add the parent directory to the python path to import nhp_sba modules
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from sat.token_issuer import TokenIssuer
@@ -23,7 +23,7 @@ SafetyGateEvaluator = evaluator_module.SafetyGateEvaluator
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("nhp_server")
 
-app = FastAPI(title="ZTCPP NHP-Server (PDP)", version="0.2.0")
+app = FastAPI(title="NHP-SBA NHP-Server (PDP)", version="0.2.0")
 
 issuer = TokenIssuer()
 gate_evaluator = SafetyGateEvaluator()

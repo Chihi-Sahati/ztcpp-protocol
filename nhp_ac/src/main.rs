@@ -1,10 +1,10 @@
-pub mod crypto_pipeline;
+
 
 use nhp_ac::crypto_pipeline::process_ingress_packet;
 use ed25519_dalek::VerifyingKey;
 
 fn main() {
-    println!("ZTCPP NHP-AC (PEP) Initialization");
+    println!("NHP-SBA NHP-AC (PEP) Initialization");
     println!("Operating in strictly zero-allocation ingress mode.");
 
     // Scaffolding demonstration of the crypto pipeline wiring.

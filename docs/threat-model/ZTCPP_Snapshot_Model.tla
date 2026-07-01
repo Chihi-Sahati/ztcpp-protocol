@@ -1,4 +1,4 @@
------------------------ MODULE ZTCPP_Snapshot_Model -----------------------
+----------------------- MODULE NHP-SBA_Snapshot_Model -----------------------
 EXTENDS Integers, FiniteSets, Sequences, TLC
 
 CONSTANTS 

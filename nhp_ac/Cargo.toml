@@ -2,8 +2,8 @@
 name = "nhp_ac"
 version = "0.1.0"
 edition = "2021"
-description = "ZTCPP Network Hiding Protocol - Access Controller (PEP)"
-authors = ["ZTCPP Engineering"]
+description = "NHP-SBA Network Hiding Protocol - Access Controller (PEP)"
+authors = ["NHP-SBA Engineering"]
 
 [dependencies]
 # Zero-copy serialization

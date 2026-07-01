@@ -5,7 +5,7 @@ import struct
 import logging
 
 # Setup Logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s.%(msecs)03d [ZTCPP-%(name)s] %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s.%(msecs)03d [NHP-SBA-%(name)s] %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
 logger_agent = logging.getLogger("AGENT")
 logger_pep = logging.getLogger("NHP-AC(Rust-Sim)")
@@ -38,7 +38,7 @@ class AgentSimulator:
         
         # Simulate network
         sleep_us(DELAY_NETWORK_US)
-        return {"type": "KNK", "t_snapshot": t_snapshot, "intent": 2, "agent_uri": "urn:ztcpp:agent:alpha"}
+        return {"type": "KNK", "t_snapshot": t_snapshot, "intent": 2, "agent_uri": "urn:nhp_sba:agent:alpha"}
 
 class NhpAcSimulator:
     def process_ingress(self, packet):
@@ -87,7 +87,7 @@ class NhpServerSimulator:
 
 def run_e2e_integration():
     print("="*60)
-    print("ZTCPP PHASE 4: END-TO-END INTEGRATION & BENCHMARKING")
+    print("NHP-SBA PHASE 4: END-TO-END INTEGRATION & BENCHMARKING")
     print("="*60)
     
     agent = AgentSimulator()

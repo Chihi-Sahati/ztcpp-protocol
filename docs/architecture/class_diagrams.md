@@ -1,8 +1,8 @@
-# ZTCPP Class Diagrams
+# NHP-SBA Class Diagrams
 
 ## Core Policy Engine & MAMA Safety Gates
 
-This diagram outlines the object-oriented structure of the ZTCPP Policy Engine.
+This diagram outlines the object-oriented structure of the NHP-SBA Policy Engine.
 
 ```mermaid
 classDiagram

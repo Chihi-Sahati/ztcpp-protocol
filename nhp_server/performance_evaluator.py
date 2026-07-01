@@ -27,9 +27,9 @@ def generate_malicious_payload(node_id: str) -> dict:
     header = {"alg": "EdDSA"}
     nonce_val = base64.b64encode(uuid.uuid4().bytes).decode()
     jws_payload = {
-        "iss": "ztcpp-agent", "aud": "ztcpp-nhp-server", "exp": int(time.time()) + 30,
+        "iss": "nhp_sba-agent", "aud": "nhp_sba-nhp-server", "exp": int(time.time()) + 30,
         "node_id": node_id, "nonce": nonce_val,
-        "timestamp": int(time.time()), "ztcpp_intent": intent, "ztcpp_context": context
+        "timestamp": int(time.time()), "nhp_sba_intent": intent, "nhp_sba_context": context
     }
     token = jws.JWS(json.dumps(jws_payload).encode("utf-8"))
     token.add_signature(rogue_key, protected=json.dumps(header))
@@ -37,7 +37,7 @@ def generate_malicious_payload(node_id: str) -> dict:
     return {
         "version": "1.0", "node_id": node_id, "timestamp": int(time.time()),
         "nonce": nonce_val, "public_key": base64.b64encode(base64.urlsafe_b64decode(rogue_key.export_public(as_dict=True)["x"] + "===")[:32]).decode(),
-        "jws": token.serialize(compact=True), "ztcpp_intent": intent, "ztcpp_context": context, "ztcpp_sat_fragment": "sat-fragment-001"
+        "jws": token.serialize(compact=True), "nhp_sba_intent": intent, "nhp_sba_context": context, "nhp_sba_sat_fragment": "sat-fragment-001"
     }
 
 def simulate_legacy_overhead():
@@ -50,7 +50,7 @@ def simulate_legacy_overhead():
     return dummy_state
 
 def run_stress_test():
-    console.print("[bold cyan]Starting ZTCPP Performance Metrics Extraction (Signaling Storm Simulation)[/bold cyan]")
+    console.print("[bold cyan]Starting NHP-SBA Performance Metrics Extraction (Signaling Storm Simulation)[/bold cyan]")
     
     metrics = []
     
@@ -60,7 +60,7 @@ def run_stress_test():
     
     with TestClient(app) as client:
         # 1. Simulate Baseline (Legacy Architecture without AbC)
-        console.print("[yellow]Simulating Legacy Architecture (No ZTCPP AbC)...[/yellow]")
+        console.print("[yellow]Simulating Legacy Architecture (No NHP-SBA AbC)...[/yellow]")
         start_time = time.time()
         for i in range(1, 101): # 100 intervals (time-steps)
             interval_start = time.time()
@@ -87,8 +87,8 @@ def run_stress_test():
             })
             
         
-        # 2. Simulate ZTCPP Architecture
-        console.print("[green]Simulating ZTCPP Architecture (Fail-Closed AbC Edge Rejection)...[/green]")
+        # 2. Simulate NHP-SBA Architecture
+        console.print("[green]Simulating NHP-SBA Architecture (Fail-Closed AbC Edge Rejection)...[/green]")
         time.sleep(2) # Cooldown
         process.cpu_percent() # Reset cpu metric
         
@@ -99,7 +99,7 @@ def run_stress_test():
             interval_start = time.time()
             requests_processed = 0
             
-            # ZTCPP can handle many more requests in the same time because it drops fast
+            # NHP-SBA can handle many more requests in the same time because it drops fast
             for _ in range(150): 
                 payload = generate_malicious_payload(node_id)
                 r = client.post("/api/v1/knk/submit", json={"payload": payload, "cei_metrics": cei_metrics})
@@ -113,7 +113,7 @@ def run_stress_test():
             
             metrics.append({
                 "Time_Step": i,
-                "Architecture": "ZTCPP (Authenticated-before-Connect)",
+                "Architecture": "NHP-SBA (Authenticated-before-Connect)",
                 "Latency_ms": latency,
                 "Throughput_req_sec": throughput,
                 "CPU_Percent": cpu,

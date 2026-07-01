@@ -1,15 +1,15 @@
-# ZTCPP Formal Security & Verification Specification
+# NHP-SBA Formal Security & Verification Specification
 
 **Status**: Protocol Freeze Phase
 **Date**: 2026-06-15
 
-This document serves as the mandatory formalization of the Zero Trust Control and Policy Protocol (ZTCPP) before advancing to implementation scaffolding. It defines the strict cryptographic boundaries, state-machine invariants, and mathematical constraints necessary to validate protocol correctness.
+This document serves as the mandatory formalization of the Zero Trust Control and Policy Protocol (NHP-SBA) before advancing to implementation scaffolding. It defines the strict cryptographic boundaries, state-machine invariants, and mathematical constraints necessary to validate protocol correctness.
 
 ---
 
 ## 1. Full Threat Model
 
-The ZTCPP architecture assumes an untrusted underlying transport network (e.g., public internet, exposed 5G fronthaul) and operates under a strict "Assume Breach" zero-trust paradigm.
+The NHP-SBA architecture assumes an untrusted underlying transport network (e.g., public internet, exposed 5G fronthaul) and operates under a strict "Assume Breach" zero-trust paradigm.
 
 ### 1.1 Replay Attacks
 - **Threat**: An adversary captures a valid `NHPHandshake` request and replays it to exhaust gateway resources or trigger unauthorized actions.
@@ -18,12 +18,12 @@ The ZTCPP architecture assumes an untrusted underlying transport network (e.g., 
 
 ### 1.2 Impersonation Attacks
 - **Threat**: An unauthorized entity attempts to forge a valid SAT (System Authentication Token) or masquerade as a valid autonomous agent.
-- **Formal Mitigation**: Every handshake MUST be signed using Ed25519 (JWS format). The public key of the `AgentID` MUST be pre-registered via the AgentDNS control plane. The signature is computed over the concatenated `(SAT_Hash || Nonce || IntentID)`.
+- **Formal Mitigation**: Every handshake MUST be signed using Ed25519 (JWS format). The public key of the `AgentID` MUST be pre-registered via the NHP-NRS control plane. The signature is computed over the concatenated `(SAT_Hash || Nonce || IntentID)`.
 - **Invariant**: $Verify_{Ed25519}(PubKey_{Agent}, Signature, Payload) == True$.
 
 ### 1.3 Downgrade Attacks
 - **Threat**: An active Man-in-the-Middle (MitM) intercepts the handshake and attempts to negotiate a weaker cipher suite.
-- **Formal Mitigation**: ZTCPP enforces a **Zero-Negotiation Policy**. The cryptographic suite (Noise IK pattern, Ed25519, ChaCha20-Poly1305) is strictly hardcoded. Any packet requesting a different suite is dropped at the edge.
+- **Formal Mitigation**: NHP-SBA enforces a **Zero-Negotiation Policy**. The cryptographic suite (Noise IK pattern, Ed25519, ChaCha20-Poly1305) is strictly hardcoded. Any packet requesting a different suite is dropped at the edge.
 - **Invariant**: $CipherSuite \in \{ \text{Strictly\_Approved\_Set} \}$.
 
 ### 1.4 SAT Abuse & Lateral Movement
@@ -39,7 +39,7 @@ The Node Handshake Protocol (NHP) operates as a strict **Fail-Closed 5-State Mac
 
 To provide independent machine-checkable proofs of these transitions, a complete **TLA+ Specification** has been authored. 
 
-**Formal Verification Artifact**: [ztcpp_formal_model.tla](file:///c:/Users/husse/Documents/Dr%20Houda/%D9%85%D8%AC%D9%84%D8%AF%20%D8%AC%D8%AF%D9%8A%D8%AF/Code/ztcpp/docs/threat-model/ztcpp_formal_model.tla)
+**Formal Verification Artifact**: [nhp_sba_formal_model.tla](file:///c:/Users/husse/Documents/Dr%20Houda/%D9%85%D8%AC%D9%84%D8%AF%20%D8%AC%D8%AF%D9%8A%D8%AF/Code/nhp_sba/docs/threat-model/nhp_sba_formal_model.tla)
 
 This TLA+ model mathematically proves the following properties via TLC model checking:
 1. **Safety (Replay Immunity)**: No two identical messages can ever result in an `ESTABLISHED` state.
@@ -90,7 +90,7 @@ The decision between Protobuf and FlatBuffers is deferred until the following tr
    - FlatBuffers guarantees a deterministic memory layout, which favors direct byte-level hashing. Protobuf requires canonical serialization before hashing.
 2. **Auditability vs. Performance**:
    - Protobuf is highly audited and supported across Python/Rust/C++ ecosystems but requires allocation during deserialization.
-   - FlatBuffers supports zero-copy deserialization (aligning perfectly with ZTCPP's zero-state requirement) but has a steeper audit curve for security vulnerabilities (e.g., bounds checking on malformed offsets).
+   - FlatBuffers supports zero-copy deserialization (aligning perfectly with NHP-SBA's zero-state requirement) but has a steeper audit curve for security vulnerabilities (e.g., bounds checking on malformed offsets).
 
 ---
 
@@ -109,7 +109,7 @@ Language selection MUST align with the security boundary defined by the Trust Zo
 - **Selection**: MUST be **Rust** for the daemon core.
 
 ### 5.3 Trust Zone C: Control Plane & Orchestration
-- **Component**: AgentDNS, Telemetry aggregators, ML Analytics.
+- **Component**: NHP-NRS, Telemetry aggregators, ML Analytics.
 - **Driver**: Ecosystem support (AI/ML), rapid iteration, complex routing logic.
 - **Selection**: **Python** or **Go** is acceptable, provided they operate *behind* the NHP Gateway.
 

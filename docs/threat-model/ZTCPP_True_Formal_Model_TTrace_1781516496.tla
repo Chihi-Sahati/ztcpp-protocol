@@ -1,14 +1,14 @@
----- MODULE ZTCPP_True_Formal_Model_TTrace_1781516496 ----
-EXTENDS Sequences, TLCExt, Toolbox, Naturals, TLC, ZTCPP_True_Formal_Model_TEConstants, ZTCPP_True_Formal_Model
+---- MODULE NHP-SBA_True_Formal_Model_TTrace_1781516496 ----
+EXTENDS Sequences, TLCExt, Toolbox, Naturals, TLC, NHP-SBA_True_Formal_Model_TEConstants, NHP-SBA_True_Formal_Model
 
 _expression ==
-    LET ZTCPP_True_Formal_Model_TEExpression == INSTANCE ZTCPP_True_Formal_Model_TEExpression
-    IN ZTCPP_True_Formal_Model_TEExpression!expression
+    LET NHP-SBA_True_Formal_Model_TEExpression == INSTANCE NHP-SBA_True_Formal_Model_TEExpression
+    IN NHP-SBA_True_Formal_Model_TEExpression!expression
 ----
 
 _trace ==
-    LET ZTCPP_True_Formal_Model_TETrace == INSTANCE ZTCPP_True_Formal_Model_TETrace
-    IN ZTCPP_True_Formal_Model_TETrace!trace
+    LET NHP-SBA_True_Formal_Model_TETrace == INSTANCE NHP-SBA_True_Formal_Model_TETrace
+    IN NHP-SBA_True_Formal_Model_TETrace!trace
 ----
 
 _inv ==
@@ -70,21 +70,21 @@ _next ==
 \* to `JsonSerialize`. For example, a sub-sequence of _TETrace.
     \* ASSUME
     \*     LET J == INSTANCE Json
-    \*         IN J!JsonSerialize("ZTCPP_True_Formal_Model_TTrace_1781516496.json", _TETrace)
+    \*         IN J!JsonSerialize("NHP-SBA_True_Formal_Model_TTrace_1781516496.json", _TETrace)
 
 =============================================================================
 
- Note that you can extract this module `ZTCPP_True_Formal_Model_TEExpression`
+ Note that you can extract this module `NHP-SBA_True_Formal_Model_TEExpression`
   to a dedicated file to reuse `expression` (the module in the 
-  dedicated `ZTCPP_True_Formal_Model_TEExpression.tla` file takes precedence 
-  over the module `ZTCPP_True_Formal_Model_TEExpression` below).
+  dedicated `NHP-SBA_True_Formal_Model_TEExpression.tla` file takes precedence 
+  over the module `NHP-SBA_True_Formal_Model_TEExpression` below).
 
----- MODULE ZTCPP_True_Formal_Model_TEExpression ----
-EXTENDS Sequences, TLCExt, Toolbox, Naturals, TLC, ZTCPP_True_Formal_Model_TEConstants, ZTCPP_True_Formal_Model
+---- MODULE NHP-SBA_True_Formal_Model_TEExpression ----
+EXTENDS Sequences, TLCExt, Toolbox, Naturals, TLC, NHP-SBA_True_Formal_Model_TEConstants, NHP-SBA_True_Formal_Model
 
 expression == 
     [
-        \* To hide variables of the `ZTCPP_True_Formal_Model` spec from the error trace,
+        \* To hide variables of the `NHP-SBA_True_Formal_Model` spec from the error trace,
         \* remove the variables below.  The trace will be written in the order
         \* of the fields of this record.
         state |-> state
@@ -126,16 +126,16 @@ Parsing and semantic processing can take forever if the trace below is long.
  trace from a generated binary file.
 
 \*
-\*---- MODULE ZTCPP_True_Formal_Model_TETrace ----
-\*EXTENDS IOUtils, TLC, ZTCPP_True_Formal_Model_TEConstants, ZTCPP_True_Formal_Model
+\*---- MODULE NHP-SBA_True_Formal_Model_TETrace ----
+\*EXTENDS IOUtils, TLC, NHP-SBA_True_Formal_Model_TEConstants, NHP-SBA_True_Formal_Model
 \*
-\*trace == IODeserialize("ZTCPP_True_Formal_Model_TTrace_1781516496.bin", TRUE)
+\*trace == IODeserialize("NHP-SBA_True_Formal_Model_TTrace_1781516496.bin", TRUE)
 \*
 \*=============================================================================
 \*
 
----- MODULE ZTCPP_True_Formal_Model_TETrace ----
-EXTENDS TLC, ZTCPP_True_Formal_Model_TEConstants, ZTCPP_True_Formal_Model
+---- MODULE NHP-SBA_True_Formal_Model_TETrace ----
+EXTENDS TLC, NHP-SBA_True_Formal_Model_TEConstants, NHP-SBA_True_Formal_Model
 
 trace == 
     <<
@@ -152,14 +152,14 @@ trace ==
 
 =============================================================================
 
----- MODULE ZTCPP_True_Formal_Model_TEConstants ----
-EXTENDS ZTCPP_True_Formal_Model
+---- MODULE NHP-SBA_True_Formal_Model_TEConstants ----
+EXTENDS NHP-SBA_True_Formal_Model
 
 CONSTANTS a1
 
 =============================================================================
 
----- CONFIG ZTCPP_True_Formal_Model_TTrace_1781516496 ----
+---- CONFIG NHP-SBA_True_Formal_Model_TTrace_1781516496 ----
 CONSTANTS
     Agents = { a1 }
     MaxNonce = 2

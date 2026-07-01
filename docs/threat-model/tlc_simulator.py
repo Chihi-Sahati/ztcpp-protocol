@@ -1,7 +1,7 @@
 import sys
 import collections
 
-# Bounded Model Checker Simulating TLC for ZTCPP
+# Bounded Model Checker Simulating TLC for NHP-SBA
 # Evaluates safety, liveness, deadlock, and livelock over a bounded depth.
 
 Agents = ["Agent1"]
@@ -142,7 +142,7 @@ def run_model_checker():
     liveness_violations = 0
     
     print("==================================================")
-    print("TLC Model Checker Simulation (ZTCPP Adversarial)")
+    print("TLC Model Checker Simulation (NHP-SBA Adversarial)")
     print("==================================================")
     
     while queue:

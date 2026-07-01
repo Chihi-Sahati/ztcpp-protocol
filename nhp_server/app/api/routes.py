@@ -126,14 +126,14 @@ async def submit_knk(
             request_id=request_id,
             decision="APPROVE",
             session_id=result.session_params.get("session_id") if result.session_params else None,
-            validated_node_id=knk_payload.ztcpp_intent.target_service, # Using target service as placeholder for node id
+            validated_node_id=knk_payload.nhp_sba_intent.target_service, # Using target service as placeholder for node id
         )
     else:
         return KnkSubmitResponse(
             request_id=request_id,
             decision="REJECT",
             reason=result.reason.value if result.reason else "unknown",
-            validated_node_id=knk_payload.ztcpp_intent.target_service,
+            validated_node_id=knk_payload.nhp_sba_intent.target_service,
         )
 
 

@@ -1,13 +1,13 @@
 openapi: 3.0.3
 info:
-  title: ZTCPP (Zero Trust Control and Policy Protocol) API
-  description: Normative API specifications for the NHP Gateway and AgentDNS Intent Resolution Engine.
+  title: NHP-SBA (Zero Trust Control and Policy Protocol) API
+  description: Normative API specifications for the NHP Gateway and NHP-NRS Intent Resolution Engine.
   version: 1.0.0
 servers:
   - url: https://{edge_gateway}:8443/api/v1
     variables:
       edge_gateway:
-        default: ztcpp-edge.local
+        default: nhp_sba-edge.local
 
 paths:
   /nhp/handshake:
@@ -31,7 +31,7 @@ paths:
         '403':
           description: Forbidden - Cryptographic or Policy (MAMA) verification failed.
 
-  /agentdns/resolve:
+  /nhp_nrs/resolve:
     post:
       summary: Resolve Agent Intent
       description: Out-of-band resolution mapping an operational intent to a network topology.

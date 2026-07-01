@@ -1,4 +1,4 @@
-# ZTCPP Formal Verification Deadlock Report
+# NHP-SBA Formal Verification Deadlock Report
 
 **Status**: ROOT CAUSE CLASSIFICATION PHASE
 **Date**: 2026-06-15
@@ -57,7 +57,7 @@ The token expiration occurred independently via environment `Tick` transitions e
 
 **Proof**: SAT Validity is checked **INSIDE transition (atomic)**.
 
-In the `ZTCPP_Deterministic_Model.tla`, the transition logic merges all stages:
+In the `NHP-SBA_Deterministic_Model.tla`, the transition logic merges all stages:
 ```tla
 AtomicVerifyAndEvaluate(a) ==
     ...
